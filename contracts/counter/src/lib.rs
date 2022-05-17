@@ -19,18 +19,20 @@ impl Counter {
         return self.val;
     }
 
-    pub fn increment(&mut self) {
+    pub fn increment(&mut self) -> i8 {
         self.val += 1;
         let log_message = format!("Increased number to {}", self.val);
         env::log(log_message.as_bytes());
         after_counter_change();
+        return self.val;
     }
 
-    pub fn decrement(&mut self) {
+    pub fn decrement(&mut self) -> i8 {
         self.val -= 1;
         let log_message = format!("Decreased number to {}", self.val);
         env::log(log_message.as_bytes());
         after_counter_change();
+        return self.val;
     }
 
     pub fn reset(&mut self) {

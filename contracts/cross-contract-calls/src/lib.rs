@@ -3,7 +3,7 @@
 
 use near_sdk::{
     borsh::{self, BorshDeserialize, BorshSerialize},
-    ext_contract, near_bindgen, AccountId, Promise,
+    env, ext_contract, near_bindgen, promise_result_as_success, AccountId, Promise,
 };
 
 #[near_bindgen]
@@ -17,13 +17,31 @@ trait CounterContract {
     fn increment(&self);
 }
 
+#[ext_contract(ext_self)]
+pub trait ExtSelf {
+    fn callback_increment(&self) -> i8;
+}
+
 #[near_bindgen]
 impl Contract {
     pub fn check_counter(&self, ext_contract_id: AccountId) -> Promise {
         ext_counter_contract::get_num(&ext_contract_id, 0, 5_000_000_000_000)
     }
 
-    pub fn increment_counter(&self, ext_contract_id: AccountId) {
-        ext_counter_contract::increment(&ext_contract_id, 0, 5_000_000_000_000);
+    pub fn increment_counter(&self, ext_contract_id: AccountId) -> Promise {
+        ext_counter_contract::increment(&ext_contract_id, 0, 5_000_000_000_000).then(
+            ext_self::callback_increment(&env::current_account_id(), 0, 5_000_000_000_000),
+        )
+    }
+
+    #[private]
+    pub fn callback_increment(&self) -> i8 {
+        if let Some(val) = promise_result_as_success() {
+            let result = near_sdk::serde_json::from_slice::<i8>(&val).unwrap();
+            env::log(format!("The counter.increment result is: {}", result).as_bytes());
+            return result;
+        } else {
+            env::panic(b"counter.increment failed");
+        }
     }
 }
