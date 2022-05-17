@@ -10,7 +10,7 @@
 
 ### Create sub account
 
-`$ local_near create-account counter.$ACCOUNT_ID --masterAccount $ACCOUNT_ID --initialBalance 1`
+`$ local_near create-account counter.$ACCOUNT_ID --masterAccount $ACCOUNT_ID --initialBalance 20`
 
 ### Deploy the smart contract
 
