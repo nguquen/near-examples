@@ -18,8 +18,8 @@ trait CounterContract {
 }
 
 #[ext_contract(ext_self)]
-pub trait ExtSelf {
-    fn callback_increment(&self) -> i8;
+pub trait ContractResolver {
+    fn resolve_increment(&self) -> i8;
 }
 
 #[near_bindgen]
@@ -30,12 +30,12 @@ impl Contract {
 
     pub fn increment_counter(&self, ext_contract_id: AccountId) -> Promise {
         ext_counter_contract::increment(&ext_contract_id, 0, 5_000_000_000_000).then(
-            ext_self::callback_increment(&env::current_account_id(), 0, 5_000_000_000_000),
+            ext_self::resolve_increment(&env::current_account_id(), 0, 5_000_000_000_000),
         )
     }
 
     #[private]
-    pub fn callback_increment(&self) -> i8 {
+    pub fn resolve_increment(&self) -> i8 {
         if let Some(val) = promise_result_as_success() {
             let result = near_sdk::serde_json::from_slice::<i8>(&val).unwrap();
             env::log(format!("The counter.increment result is: {}", result).as_bytes());
