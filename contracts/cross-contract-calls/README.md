@@ -19,3 +19,5 @@
 ## Invoking the methods
 
 `$ localnear call cross-contract.$ACCOUNT_ID check_counter '{"ext_contract_id": "counter.'$ACCOUNT_ID'"}' --accountId $ACCOUNT_ID`
+
+`$ localnear call cross-contract.$ACCOUNT_ID increment_counter '{"ext_contract_id": "counter.'$ACCOUNT_ID'"}' --accountId $ACCOUNT_ID`

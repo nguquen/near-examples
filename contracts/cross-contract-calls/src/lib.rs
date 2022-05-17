@@ -13,11 +13,17 @@ pub struct Contract {}
 #[ext_contract(ext_counter_contract)]
 trait CounterContract {
     fn get_num(&self) -> i8;
+
+    fn increment(&self);
 }
 
 #[near_bindgen]
 impl Contract {
     pub fn check_counter(&self, ext_contract_id: AccountId) -> Promise {
         ext_counter_contract::get_num(&ext_contract_id, 0, 5_000_000_000_000)
+    }
+
+    pub fn increment_counter(&self, ext_contract_id: AccountId) {
+        ext_counter_contract::increment(&ext_contract_id, 0, 5_000_000_000_000);
     }
 }
