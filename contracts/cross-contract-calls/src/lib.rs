@@ -3,8 +3,11 @@
 
 use near_sdk::{
     borsh::{self, BorshDeserialize, BorshSerialize},
-    env, ext_contract, near_bindgen, promise_result_as_success, AccountId, Promise,
+    env, ext_contract, near_bindgen, promise_result_as_success, AccountId, Balance, Gas, Promise,
 };
+
+pub const NO_DEPOSIT: Balance = 0;
+pub const GAS_FOR_BASIC_OP: Gas = 5_000_000_000_000;
 
 #[near_bindgen]
 #[derive(Default, BorshDeserialize, BorshSerialize)]
@@ -25,12 +28,12 @@ pub trait ContractResolver {
 #[near_bindgen]
 impl Contract {
     pub fn check_counter(&self, ext_contract_id: AccountId) -> Promise {
-        ext_counter_contract::get_num(&ext_contract_id, 0, 5_000_000_000_000)
+        ext_counter_contract::get_num(&ext_contract_id, NO_DEPOSIT, GAS_FOR_BASIC_OP)
     }
 
     pub fn increment_counter(&self, ext_contract_id: AccountId) -> Promise {
-        ext_counter_contract::increment(&ext_contract_id, 0, 5_000_000_000_000).then(
-            ext_self::resolve_increment(&env::current_account_id(), 0, 5_000_000_000_000),
+        ext_counter_contract::increment(&ext_contract_id, NO_DEPOSIT, GAS_FOR_BASIC_OP).then(
+            ext_self::resolve_increment(&env::current_account_id(), NO_DEPOSIT, GAS_FOR_BASIC_OP),
         )
     }
 
